@@ -1,5 +1,8 @@
-import axios, { AxiosResponse } from "axios";
-import { Activity } from "../models/activity";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
+import { Activity } from '../models/activity';
+import { router } from '../router/Routes';
+import { store } from '../stores/store';
 
 const sleep = (delay: number) => {
     return new Promise((resolve) => {
@@ -7,33 +10,85 @@ const sleep = (delay: number) => {
     })
 }
 
-axios.defaults.baseURL = "http://localhost:5000/api";
+axios.defaults.baseURL = 'http://localhost:5000/api';
 
-axios.interceptors.response.use(async response => {
-    try {
-        await sleep(1000);
-        return response;
-    } catch (error) {
-        console.log(error);
-        return await Promise.reject(error);
+const responseBody = <T>(response: AxiosResponse<T>) => response.data;
+
+axios.interceptors.response.use(
+    async (response: AxiosResponse) => {
+      await sleep(1000);
+      return response;
+    },
+    (error: AxiosError) => {
+      handleErrorResponse(error);
+      return Promise.reject(error);
     }
-})
+  );
+  
+  function handleErrorResponse(error: AxiosError) {
+    const { data, status, config } = error.response as AxiosResponse;
+    switch (status) {
+      case 400:
+        handleBadRequestError(data, config);
+        break;
+      case 401:
+        handleUnauthorizedError();
+        break;
+      case 403:
+        handleForbiddenError();
+        break;
+      case 404:
+        handleNotFoundError();
+        break;
+      case 500:
+        handleServerError(data);
+        break;
+      default:
+        break;
+    }
+  }
+  
+  function handleBadRequestError(data: any, config: AxiosRequestConfig) {
+    if (typeof data === 'string') {
+      toast.error(data);
+    } else if (config.method === "get" && data.errors.hasOwnProperty("id")) {
+      router.navigate("/not-found");
+    } else if (data.errors) {
+      const modalStateErrors = Object.values(data.errors).filter(error => error);
+      throw modalStateErrors.flat();
+    }
+  }
+  
+  function handleUnauthorizedError() {
+    toast.error("unauthorized");
+  }
+  
+  function handleForbiddenError() {
+    toast.error("forbidden");
+  }
 
-const responseBody = <T> (response: AxiosResponse<T>) => response.data;
+  function handleNotFoundError() {
+    router.navigate("/not-found");
+  }
+  
+  function handleServerError(data: any) {
+    store.commonStore.setServerError(data);
+    router.navigate("/server-error");
+  }
 
-const request = {
-    get: <T> (url: string) => axios.get<T>(url).then(responseBody), 
-    post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(responseBody), 
-    put: <T> (url: string, body: {}) => axios.put<T>(url, body).then(responseBody), 
-    del: <T> (url: string) => axios.delete<T>(url).then(responseBody), 
+const requests = {
+    get: <T>(url: string) => axios.get<T>(url).then(responseBody),
+    post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
+    put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
+    del: <T>(url: string) => axios.delete<T>(url).then(responseBody)
 }
 
 const Activities = {
-    list: () => request.get<Activity[]>('/activities'),
-    details: (id: string) => request.get<Activity>(`/activities/${id}`),
-    create: (activity: Activity) => request.post<void>(`/activities`, activity),
-    update: (activity: Activity) => request.put<void>(`/activities/${activity.id}`, activity),
-    delete: (id: string) => request.del<void>(`/activities/${id}`)
+    list: () => requests.get<Activity[]>(`/activities`),
+    details: (id: string) => requests.get<Activity>(`/activities/${id}`),
+    create: (activity: Activity) => requests.post<void>(`/activities`, activity),
+    update: (activity: Activity) => requests.put<void>(`/activities/${activity.id}`, activity),
+    delete: (id: string) => requests.del<void>(`/activities/${id}`)
 }
 
 const agent = {
