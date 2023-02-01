@@ -9,13 +9,12 @@ import ActivityList from './ActivityList';
 
 
 export default observer(function ActivityDashboard() {
-    const {activityStore, userStore} = useStore();
+    const {activityStore} = useStore();
     const {loadActivities, activityRegistry} = activityStore;
     
     useEffect(() => {
-        if (!userStore.isLoggedIn) router.navigate('/')
         if (activityRegistry.size <= 1) loadActivities()
-    }, [loadActivities, activityRegistry.size, userStore])
+    }, [loadActivities, activityRegistry.size])
   
     
     if (activityStore.loadingInitial) return <LoadingComponent content='Loading app' />
