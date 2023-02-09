@@ -1,4 +1,3 @@
-using System.Net;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
 using API.Extensions;
