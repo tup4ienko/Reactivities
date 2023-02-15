@@ -20,7 +20,7 @@ export default class ProfileStore {
         return false;
     }
 
-    loadProlile =async (username: string) => {
+    loadProlile = async (username: string) => {
         this.loadingProfile = true;
         try {
             const profile = await agent.Profiles.get(username);
@@ -63,11 +63,12 @@ export default class ProfileStore {
             runInAction(() => {
                 if (this.profile && this.profile.photos) {
                     this.profile.photos.find(x => x.isMain)!.isMain = false;
-                    this.profile.photos.find(x => x.id == photo.id)!.isMain = true;
+                    this.profile.photos.find(x => x.id === photo.id)!.isMain = true;
                     this.profile.image = photo.url;
                     this.loading = false;
                 }
             })
+            store.activityStore.activityRegistry.clear();
         } catch (error) {
             runInAction(() => this.loading = false);
             console.log(error);
