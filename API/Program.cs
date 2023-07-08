@@ -2,6 +2,7 @@ using Persistence;
 using Microsoft.EntityFrameworkCore;
 using API.Extensions;
 using API.MIddleware;
+using API.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chat");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
