@@ -6,11 +6,11 @@ import { User, UserFormValues } from '../models/user';
 import { router } from '../router/Routes';
 import { store } from '../stores/store';
 
-const sleep = (delay: number) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    })
-}
+// const sleep = (delay: number) => {
+//     return new Promise((resolve) => {
+//         setTimeout(resolve, delay);
+//     })
+// }
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -24,8 +24,8 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(
     async (response: AxiosResponse) => {
-      await sleep(1000);
       return response;
+      // await sleep(1000);
     },
     (error: AxiosError) => {
       handleErrorResponse(error);
@@ -117,7 +117,10 @@ const Profiles = {
   },
   setMainPhoto: (id: string) => requests.post<void>(`/photos/${id}/setMain`, {}),
   deletePhoto: (id: string) => requests.del<void>(`/photos/${id}`),
-  updateProfile: (profile: Partial<Profile>) => requests.put<void>(`/profiles`, profile)
+  updateProfile: (profile: Partial<Profile>) => requests.put<void>(`/profiles`, profile),
+  updateFollowing: (username: string) => requests.post(`/follow/${username}`, {}),
+  listFollowings: (username: string, predicate: string) => 
+    requests.get<Profile[]>(`/follow/${username}?predicate=${predicate}`)
 }
 
 const agent = {

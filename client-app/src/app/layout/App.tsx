@@ -11,29 +11,31 @@ import ModalContainer from '../common/modals/ModalContainer';
 
 function App() {
   const location = useLocation();
-  const {commonStore, userStore} = useStore();
+  const { commonStore, userStore } = useStore();
 
   useEffect(() => {
     if (commonStore.token) {
-      userStore.getUser().finally(() => commonStore.setAppLoaded())
+      userStore.getUser().finally(() => commonStore.setAppLoaded());
     } else {
-      commonStore.setAppLoaded()
+      commonStore.setAppLoaded();
     }
-  }, [commonStore, userStore])
+  }, [commonStore, userStore]);
 
-  if (!commonStore.appLoaded) return <LoadingComponent content='Loading app...' />
+  if (!commonStore.appLoaded) return <LoadingComponent content='Loading app...' />;
 
   return (
     <>
-    <ModalContainer />
-    <ToastContainer position='bottom-right' hideProgressBar theme='colored' />
-      {location.pathname === '/' || !userStore.isLoggedIn ? <HomePage /> : (
-      <>
-        <NavBar />
-        <Container style={{marginTop: '7em'}}>
-          <Outlet />
-        </Container>
-      </>
+      <ModalContainer />
+      <ToastContainer position='bottom-right' hideProgressBar theme='colored' />
+      {location.pathname === '/' || !userStore.isLoggedIn ? (
+        <HomePage />
+      ) : (
+        <>
+          <NavBar />
+          <Container style={{ marginTop: '7em' }}>
+            <Outlet />
+          </Container>
+        </>
       )}
     </>
   );

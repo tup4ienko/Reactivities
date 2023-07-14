@@ -1,60 +1,60 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import agent from "../api/agent";
-import { User, UserFormValues } from "../models/user";
-import { router } from "../router/Routes";
-import { store } from "./store";
+import { makeAutoObservable, runInAction } from 'mobx';
+import agent from '../api/agent';
+import { User, UserFormValues } from '../models/user';
+import { router } from '../router/Routes';
+import { store } from './store';
 
 export default class UserStore {
-    user: User | null = null;
+  user: User | null = null;
 
-    constructor() {
-        makeAutoObservable(this)
-    }
+  constructor() {
+    makeAutoObservable(this);
+  }
 
-    get isLoggedIn() {
-        return !!this.user;
-    }
+  get isLoggedIn() {
+    return !!this.user;
+  }
 
-    handleAuth = async (creds: UserFormValues, authFn: Function) => {
-        try {
-            const user = await authFn(creds);
-            store.commonStore.setToken(user.token);
-            runInAction(() => this.user = user);
-            router.navigate('/activities');
-            store.modalStore.closeModal();
-        } catch (error) {
-            throw error;
-        }
+  handleAuth = async (creds: UserFormValues, authFn: Function) => {
+    try {
+      const user = await authFn(creds);
+      store.commonStore.setToken(user.token);
+      runInAction(() => (this.user = user));
+      router.navigate('/activities');
+      store.modalStore.closeModal();
+    } catch (error) {
+      throw error;
     }
-    
-    login = (creds: UserFormValues) => this.handleAuth(creds, agent.Account.login);
-    
-    register = (creds: UserFormValues) => this.handleAuth(creds, agent.Account.register);
+  };
 
-    logout = () => {
-        store.commonStore.setToken(null);
-        this.user = null;
-        router.navigate('/');
-    }
+  login = (creds: UserFormValues) => this.handleAuth(creds, agent.Account.login);
 
-    getUser = async () => {
-        try {
-            const user = await agent.Account.current();
-            runInAction(() => this.user = user);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+  register = (creds: UserFormValues) => this.handleAuth(creds, agent.Account.register);
 
-    setImage = (image: string) => {
-        if (this.user) {
-            this.user.image = image;
-        }
-    }
+  logout = () => {
+    store.commonStore.setToken(null);
+    this.user = null;
+    router.navigate('/');
+  };
 
-    setDisplayName = (name: string) => {
-        if (this.user) {
-            this.user.displayName = name;
-        }
+  getUser = async () => {
+    try {
+      const user = await agent.Account.current();
+      runInAction(() => (this.user = user));
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  setImage = (image: string) => {
+    if (this.user) {
+      this.user.image = image;
+    }
+  };
+
+  setDisplayName = (name: string) => {
+    if (this.user) {
+      this.user.displayName = name;
+    }
+  };
 }
