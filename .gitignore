@@ -6,6 +6,7 @@
 
 identifier.sqlite
 .idea/
+/.vscode/
 
 vcs.xml
 projectSettingsUpdater.xml

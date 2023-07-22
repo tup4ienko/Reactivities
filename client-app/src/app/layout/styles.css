@@ -66,3 +66,21 @@ body {
   font-size: 1.7em;
   font-weight: normal;
 }
+
+
+.activity-filter {
+  position: fixed;
+  max-width: 405.13px;
+}
+
+@media (max-width: 1199px) {
+  .activity-filter {
+    max-width: 332.38px;
+  }
+}
+
+@media (max-width: 991px) {
+  .activity-filter {
+    max-width: 253.63px;
+  }
+} 
