@@ -1,7 +1,8 @@
 using Application.Activities;
 using Application.Comments;
-using AutoMapper;
+using Application.Profiles;
 using Domain;
+using Profile = AutoMapper.Profile;
 
 namespace Application.Core
 {
@@ -24,7 +25,15 @@ namespace Application.Core
                 .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.AppUser.Followers.Count))
                 .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.AppUser.Followings.Count))
                 .ForMember(d => d.Following, o => o.MapFrom(s => s.AppUser.Followers.Any(x => x.Observer.UserName == currentUsername)));
-
+            
+            CreateMap<ActivityAttendee, UserActivityDto>()
+                .ForMember(d => d.Id, opt => opt.MapFrom(src => src.Activity.Id))
+                .ForMember(d => d.Title, opt => opt.MapFrom(src => src.Activity.Title))
+                .ForMember(d => d.Category, opt => opt.MapFrom(src => src.Activity.Category))
+                .ForMember(d => d.Date, opt => opt.MapFrom(src => src.Activity.Date))
+                .ForMember(d => d.HostUsername, opt => opt.MapFrom(src => src.Activity.Attendees
+                    .FirstOrDefault(x => x.IsHost).AppUser.UserName));
+            
             CreateMap<AppUser, Profiles.Profile>()
                 .ForMember(d => d.Image, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.Followers.Count))
