@@ -1,8 +1,6 @@
 # Reactivities 🎉
 Reactivities is a network app that enables you to create and share events with others. With Reactivities, you can plan, organize and share all your activities with your friends, family or coworkers. Whether you're planning a trip, hosting a party, or organizing a meeting, Reactivities makes it easy to get everyone on the same page.
 
-![Demonstration](https://media.giphy.com/media/hvRJCLFzcasrK/giphy.gif)
-
 ## Built With 🛠️
 Reactivities has been built with the following technologies:
 - [Typescript](https://www.typescriptlang.org/) 
@@ -10,28 +8,11 @@ Reactivities has been built with the following technologies:
 - [React 18](https://reactjs.org/)
 - [MobX](https://mobx.js.org/README.html)
 - [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr)
 
 ## Deployment 🚀
 Reactivities has been deployed on [Flyio](https://fly.io/), ensuring seamless scalability and quick deployment.
-
-## Docker Compose 🐳
-To run Reactivities using Docker Compose, follow these steps:
-
-1. Clone the repository to your local machine
-```bash
-git clone https://github.com/tup4ienko/Reactivities.git
-```
-2. Navigate to the project directory
-```bash
-cd Reactivities
-```
-3. Start the containers using Docker Compose
-```
-docker-compose up
-```
 
 ## Goals 🎯
 The goals for Reactivities include:
@@ -42,9 +23,6 @@ The goals for Reactivities include:
 - Provide a Followers and Following feature
 - Allow users to comment on events
 - Offer Paging, Sorting, and Filtering functionality
-- Implement Email verification
-- Integrate Facebook login
-- Provide the ability to refresh JWT tokens
 - Implement Routing
 
 ## Testing 🧪
